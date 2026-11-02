@@ -229,7 +229,17 @@ class MainActivity : Activity() {
         }
         val scroll = ScrollView(this)
         val body = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
-        body.addView(TextView(this).apply { text = getString(R.string.app_name); textSize = 26f; setTextColor(foreground) })
+        val header = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL; gravity = Gravity.CENTER_VERTICAL }
+        header.addView(ImageView(this).apply {
+            setImageResource(R.drawable.zetic_brand_mark)
+            contentDescription = "Zetic logo"
+        }, LinearLayout.LayoutParams(dp(40), dp(40)).apply { marginEnd = dp(12) })
+        header.addView(TextView(this).apply {
+            text = getString(R.string.app_name)
+            textSize = 22f
+            setTextColor(foreground)
+        }, LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f))
+        body.addView(header)
         status = TextView(this).apply { text = "Looking for model…"; textSize = 14f; setPadding(0, dp(8), 0, dp(18)) }
         body.addView(status)
         buttons = samples.chunked(2).flatMap { pair ->
