@@ -33,11 +33,11 @@ cd android
 adb install -r app/build/outputs/apk/debug/app-debug.apk
 ```
 
-Open LFM3 Demo; the app loads Omni with a 4,096-position context. Enter a message, or attach an image from the photo picker or the in-app camera. Audio may be recorded (up to 30 seconds) or selected as WAV. Choose text, speech, or both for the response. Speech plays as it streams and can be replayed; generated WAV files are saved in the app's external files directory. Camera capture closes the preview before inference.
+Open LFM3 Demo; the app loads Omni with a 2,048-position context. Tap one of six fixed examples: text, image, or audio input, each with text or speech output. The app shows the output and its TTFT and TPS. Speech results can be played again; WAV and text results are saved under the app's external `files/results/` directory. The app uses the same bundled sample inputs as the IQ9 CLI.
 
 The SDK's Android CPU libraries and CLI executables and the app JNI library are built for 16 KB page alignment. DSP skeletons are Hexagon binaries and are not loaded as Android CPU libraries. Extracted native libraries are required for FastRPC; the app configures this at install time. If model loading fails, check the selected target, the files and the app logcat output for FastRPC or skeleton-loading errors. Do not run another NPU process simultaneously.
 
-For automated sample runs, launch with `adb shell am start -n ai.zetic.lfm3demo/.MainActivity --es scenario chat` (replace `chat` with a scenario name below). Results and speech WAV files are saved under the app's external `files/results/` directory.
+For automated sample runs, launch with `adb shell am start -n ai.zetic.lfm3demo/.MainActivity --es scenario chat` (replace `chat` with `tts`, `image`, `vl_audio`, `asr`, or `voice`; `all` runs all six). Results and speech WAV files are saved under the app's external `files/results/` directory.
 
 ## IQ9
 
@@ -55,7 +55,7 @@ Run `./out/lfm3_cli --help` for generation settings and file options. Images and
 
 ## Samples
 
-The app and CLI use the same files in `samples/`; actual wording varies.
+The app's six examples are `chat` (text → text), `tts` (text → audio), `image` (image → text), `vl_audio` (image → audio), `asr` (audio → text), and `voice` (audio → audio). The audio-output examples may also return text. The CLI has additional scenarios. Both use the same files in `samples/`; actual wording varies.
 
 | Scenario | Input | Expected result |
 | --- | --- | --- |
