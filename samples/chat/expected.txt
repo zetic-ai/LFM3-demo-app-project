@@ -1,0 +1,1 @@
+Three turns of one conversation. Expected: a list of three planets, then Jupiter (or the largest of the ones named), then roughly 778 million km / 5.2 AU. The later answers use the earlier turns (multi-turn). The second and third turns start faster because the SDK reuses the cached conversation.

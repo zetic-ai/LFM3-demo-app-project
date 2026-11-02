@@ -1,0 +1,1 @@
+The word CAT (black letters on white). A synthetic image made for the SDK tests.

@@ -1,0 +1,14 @@
+# models and build outputs never go in git (the SDK tarballs in sdk/ and the libraries it ships are committed)
+models/
+*.gguf
+*.apk
+*.aab
+local.properties
+.gradle/
+build/
+.cxx/
+.idea/
+*.iml
+captures/
+/iq9/out/
+.DS_Store

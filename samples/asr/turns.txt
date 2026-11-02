@@ -1,0 +1,3 @@
+out=text
+audio=jfk.wav
+text=Transcribe the audio.
