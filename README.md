@@ -1,6 +1,6 @@
 # LFM3 demo
 
-A multimodal chat demo using the ZeticMLange Hexagon SDK: an Android app and a file-based IQ9 CLI. The model is not included. Access to the private `ZETIC-ai/LFM3` Hugging Face repository and a Hugging Face login are required. The bundled SDK and its Qualcomm DSP libraries are subject to their respective licenses.
+A multimodal SDK sample project with a six-example Android app and a file-based IQ9 CLI. The model is not included. Access to the private `ZETIC-ai/LFM3` Hugging Face repository and a Hugging Face login are required. The bundled SDK and its Qualcomm DSP libraries are subject to their respective licenses.
 
 This demo uses manual model download and `adb push`. A distributed app should download the model separately with authentication, verify its package checksums, and store it in app-specific files; this demo does not implement that downloader.
 
