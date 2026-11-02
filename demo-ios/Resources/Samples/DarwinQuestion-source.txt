@@ -1,0 +1,12 @@
+# Darwin question audio sample
+
+This is a locally synthesized English question for the LFM3 Omni audio-input demo. It asks the model to answer questions using the accompanying Darwin introduction; the spoken question does not state its own answer.
+
+Spoken text (exact):
+
+> I'm preparing a short introduction for a museum discussion. The text on screen is an extract from Darwin's book. What first led him to investigate the origin of species, and why did he spend years collecting evidence before publishing? Explain both points in simple language for a visitor with no science background. Base your answer on the extract, not outside knowledge, and keep it to two short sentences.
+
+Generator: macOS `say` command, Samantha (English, United States) voice, 140 words per minute.
+Output conversion: macOS `afconvert`, uncompressed WAVE PCM, signed little-endian 16-bit, mono, 16,000 Hz.
+
+The voice is synthesized locally; no third-party voice asset or external audio source is used. The WAV is intended as a question about `DarwinIntroduction.txt` and does not reproduce that document's answer.

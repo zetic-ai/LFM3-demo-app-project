@@ -1,12 +1,17 @@
 # LFM3 demo
 
-A multimodal SDK sample project with a six-example Android app and a file-based IQ9 CLI. The model is not included. Access to the private `ZETIC-ai/LFM3` Hugging Face repository and a Hugging Face login are required. The bundled SDK and its Qualcomm DSP libraries are subject to their respective licenses.
+A multimodal SDK sample project with Android and iOS apps and a file-based IQ9 CLI. The models are not included. Access to the gated `ZETIC-ai/LFM3` Hugging Face repository and a Hugging Face login are required. The bundled SDKs and their dependencies are subject to their respective licenses.
 
-This demo uses manual model download and `adb push`. A distributed app should download the model separately with authentication, verify its package checksums, and store it in app-specific files; this demo does not implement that downloader.
+This demo uses a separately downloaded model. Android uses `adb push`; the iOS
+demo uses an already downloaded optimized model directory in its app Documents.
+See [iOS setup](demo-ios/README.md) for its package validation and SDK build.
 
 ## Models
 
-Install the Hugging Face CLI and authenticate, then download the package for your device:
+First open [ZETIC-ai/LFM3](https://huggingface.co/ZETIC-ai/LFM3), select
+**Request access**, and wait for approval. If access has already been granted,
+you can skip the request. Install the Hugging Face CLI and authenticate with
+the approved account, then download the package for your device:
 
 ```sh
 # Galaxy S25 (v79)
@@ -39,6 +44,17 @@ The SDK's Android CPU libraries and CLI executables and the app JNI library are 
 
 For automated sample runs, launch with `adb shell am start -n ai.zetic.lfm3demo/.MainActivity --es scenario summary` (replace `summary` with `tts`, `image`, `vl_audio`, `asr`, or `voice`; `all` runs all six). Results and speech WAV files are saved under the app's external `files/results/` directory.
 
+## iOS
+
+The iOS demo uses LFM3-1.7B, LFM3-Audio-2B, LFM3-VL-2B and LFM3-Omni-2B
+with the included iOS SDK. Six sample scenarios
+select the matching model automatically. The app displays the input, generated
+output and measured text or speech timings. Models are supplied separately;
+llama.cpp is not included.
+
+For the pinned SDK build, model placement, signing and measurement definitions,
+see [demo-ios/README.md](demo-ios/README.md).
+
 ## IQ9
 
 With a GNU C++ toolchain installed on the IQ9, the included SDK is sufficient:
@@ -67,4 +83,4 @@ The app's six examples are `summary` (long text → text), `tts` (text → audio
 | `vl_audio` | Synthetic circles and a prompt | Image description in text and speech |
 | `voice` | Spoken question | Text and spoken answer naming Paris |
 
-See [samples/README.md](samples/README.md) for file details and attribution. iOS is reserved for a future project.
+See [samples/README.md](samples/README.md) for file details and attribution.

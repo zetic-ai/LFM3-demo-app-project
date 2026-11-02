@@ -1,0 +1,35 @@
+{
+  "repo_id": "ZETIC-ai/LFM3",
+  "revision": "24a56588cb8a84e25c821217a02ddc437ed7a30c",
+  "expected_package_id": "43669fe025f8ccdf5aa5a011f3ad4e610c922cc28f79d790f874e737f7661dd6",
+  "provenance_sha256": "",
+  "model_directory": "OmniModel",
+  "models": {
+    "text": {
+      "model_directory": "apple/lfm3-1.7b/ios",
+      "expected_package_id": "1aa886706d40a029791cf3a793587e3d8b520efcd55ceddf06386290477f38d4",
+      "provenance_sha256": "",
+      "fallback_directories": []
+    },
+    "audio": {
+      "model_directory": "apple/lfm3-audio-2b/ios",
+      "expected_package_id": "c7ba398e1df44b7fc02492b707ab789eb7b57ac758df55a4eb1cfc0fd4231755",
+      "provenance_sha256": "",
+      "fallback_directories": []
+    },
+    "vl": {
+      "model_directory": "apple/lfm3-vl-2b/ios",
+      "expected_package_id": "956e10c69cc385e946b7d65f52c586fa690851f0236a270dbd58edeb28f37e99",
+      "provenance_sha256": "",
+      "fallback_directories": []
+    },
+    "omni": {
+      "model_directory": "apple/lfm3-omni-2b/ios",
+      "expected_package_id": "43669fe025f8ccdf5aa5a011f3ad4e610c922cc28f79d790f874e737f7661dd6",
+      "provenance_sha256": "",
+      "fallback_directories": [
+        "OmniModel"
+      ]
+    }
+  }
+}
