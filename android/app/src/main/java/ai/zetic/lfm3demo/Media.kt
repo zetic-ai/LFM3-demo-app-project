@@ -3,6 +3,8 @@ package ai.zetic.lfm3demo
 import android.media.AudioAttributes
 import android.media.AudioFormat
 import android.media.AudioTrack
+import android.graphics.Bitmap
+import android.graphics.Color
 import java.io.File
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
@@ -12,6 +14,14 @@ import kotlin.math.min
 
 /** Sample asset readers and the speech result player. */
 object Media {
+    /** Preview a bundled P6 sample; model inference uses the original RGB bytes. */
+    fun bitmapOfRgb(rgb: ByteArray, width: Int, height: Int): Bitmap {
+        require(rgb.size == width * height * 3)
+        val pixels = IntArray(width * height) { i ->
+            Color.rgb(rgb[i * 3].toInt() and 255, rgb[i * 3 + 1].toInt() and 255, rgb[i * 3 + 2].toInt() and 255)
+        }
+        return Bitmap.createBitmap(pixels, width, height, Bitmap.Config.ARGB_8888)
+    }
     /** Binary PPM (P6, maxval 255) -> RGB bytes; must be 512 x 512 for the SDK. */
     fun parsePpm(data: ByteArray): Triple<ByteArray, Int, Int> {
         var pos = 0

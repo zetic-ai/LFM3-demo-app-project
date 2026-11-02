@@ -12,6 +12,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.ScrollView
 import android.widget.TextView
@@ -24,7 +25,7 @@ class MainActivity : Activity() {
     private val ui = Handler(Looper.getMainLooper())
     private val worker = Executors.newSingleThreadExecutor()
     private val samples = listOf(
-        Example("chat", "Text → text", "Text prompt", "Text answer"),
+        Example("summary", "Text → text", "Long article", "Summary"),
         Example("tts", "Text → audio", "Text prompt", "Spoken answer"),
         Example("image", "Image → text", "Image + prompt", "Text description"),
         Example("vl_audio", "Image → audio", "Image + prompt", "Spoken description"),
@@ -35,6 +36,8 @@ class MainActivity : Activity() {
 
     private lateinit var status: TextView
     private lateinit var inputView: TextView
+    private lateinit var inputImageView: ImageView
+    private lateinit var inputAudioButton: Button
     private lateinit var outputView: TextView
     private lateinit var metricsView: TextView
     private lateinit var playButton: Button
@@ -46,6 +49,7 @@ class MainActivity : Activity() {
     private var hookRunning = false
     private var pending: String? = null
     private var resultAudio: File? = null
+    private var inputAudio: Media.Pcm? = null
     private var player: StreamPlayer? = null
     private val resultsDir get() = File(getExternalFilesDir(null), "results")
 
@@ -147,6 +151,7 @@ class MainActivity : Activity() {
         val turn = scenario.turns.first()
         ui.post {
             player?.stop(); player = null; resultAudio = null
+            inputAudio = null
             inputView.text = buildString {
                 append("${example.title}\n${example.input}: ")
                 append(turn.text.ifEmpty { "(no text prompt)" })
@@ -156,18 +161,27 @@ class MainActivity : Activity() {
             outputView.text = "Running…"
             metricsView.text = "TTFT —   ·   TPS —"
             playButton.visibility = View.GONE
+            inputImageView.visibility = View.GONE
+            inputAudioButton.visibility = View.GONE
         }
         val log = StringBuilder("scenario $name\n")
         try {
             val m = llm ?: error("model unloaded")
             m.reset()
-            turn.imageFile?.let { path ->
-                val (rgb, w, h) = assets.open(path).use { Media.parsePpm(it.readBytes()) }
-                m.addImage(rgb, w, h)
-            }
-            turn.audioFile?.let { path ->
-                val pcm = assets.open(path).use { Media.readWav(it.readBytes()) }
-                m.addAudio(pcm.samples, pcm.rate, pcm.channels)
+            val image = turn.imageFile?.let { path -> assets.open(path).use { Media.parsePpm(it.readBytes()) } }
+            val audio = turn.audioFile?.let { path -> assets.open(path).use { Media.readWav(it.readBytes()) } }
+            image?.let { (rgb, w, h) -> m.addImage(rgb, w, h) }
+            audio?.let { m.addAudio(it.samples, it.rate, it.channels) }
+            ui.post {
+                image?.let { (rgb, w, h) ->
+                    inputImageView.setImageBitmap(Media.bitmapOfRgb(rgb, w, h))
+                    inputImageView.visibility = View.VISIBLE
+                }
+                audio?.let {
+                    inputAudio = it
+                    inputAudioButton.text = "Play input audio · %.1f s".format(it.seconds)
+                    inputAudioButton.visibility = View.VISIBLE
+                }
             }
             if (turn.text.isNotEmpty()) m.addText(turn.text)
             val speech = turn.out != "text"
@@ -231,9 +245,25 @@ class MainActivity : Activity() {
             rowButtons
         }
         inputView = TextView(this).apply { text = "Choose one of the six samples."; textSize = 16f; setTextColor(foreground); setPadding(0, dp(20), 0, dp(12)) }
+        inputImageView = ImageView(this).apply { visibility = View.GONE; adjustViewBounds = true; scaleType = ImageView.ScaleType.FIT_START }
+        inputAudioButton = Button(this).apply {
+            text = "Play input audio"; isAllCaps = false; visibility = View.GONE
+            setOnClickListener {
+                inputAudio?.let { pcm ->
+                    player?.stop()
+                    val mono = if (pcm.channels == 1) pcm.samples else FloatArray(pcm.samples.size / pcm.channels) { i ->
+                        (0 until pcm.channels).sumOf { c -> pcm.samples[i * pcm.channels + c].toDouble() }.toFloat() / pcm.channels
+                    }
+                    player = StreamPlayer(pcm.rate).also { it.write(mono); it.finish() }
+                    updateButtons()
+                }
+            }
+        }
         outputView = TextView(this).apply { text = "Output appears here."; textSize = 18f; setTextColor(foreground); setTextIsSelectable(true); setPadding(0, dp(8), 0, dp(12)) }
         metricsView = TextView(this).apply { text = "TTFT —   ·   TPS —"; textSize = 16f; setTextColor(foreground) }
         body.addView(inputView)
+        body.addView(inputImageView, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, dp(190)))
+        body.addView(inputAudioButton)
         body.addView(TextView(this).apply { text = "Output"; textSize = 14f; setTextColor(foreground) })
         body.addView(outputView)
         body.addView(metricsView)
