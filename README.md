@@ -1,4 +1,4 @@
-# LFM3 demo
+# LFM3 on ZETIC Engine
 
 A multimodal SDK sample project with Android and iOS apps and a file-based IQ9 CLI. The models are not included. Access to the gated `ZETIC-ai/LFM3` Hugging Face repository and a Hugging Face login are required. The bundled SDKs and their dependencies are subject to their respective licenses.
 
