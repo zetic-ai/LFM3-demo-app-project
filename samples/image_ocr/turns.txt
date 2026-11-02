@@ -1,0 +1,3 @@
+out=text
+image=ocr.ppm
+text=What word is written in the image?

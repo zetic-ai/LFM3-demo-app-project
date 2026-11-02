@@ -1,0 +1,1 @@
+A spoken WAV (24 kHz mono) of: The quick brown fox jumps over the lazy dog.

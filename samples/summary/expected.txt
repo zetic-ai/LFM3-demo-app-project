@@ -1,0 +1,1 @@
+One long prompt (about 1,800 tokens, needs the 4,096 context). Expected: a short summary of Darwin's introduction: what he noticed as naturalist on the Beagle (distribution of species in South America, fossils), that this led him to think species change, and that natural selection of small variations is the means (the main idea). Three sentences or so; the exact wording varies.

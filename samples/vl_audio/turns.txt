@@ -1,0 +1,3 @@
+out=both
+image=../image_count/count.ppm
+text=Describe this image in one short sentence.

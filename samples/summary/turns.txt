@@ -1,0 +1,2 @@
+text=Summarize the following text in three sentences.
+text_file=article.txt

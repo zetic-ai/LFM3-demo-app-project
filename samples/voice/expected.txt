@@ -1,0 +1,1 @@
+Voice chat: the spoken question "What is the capital of France?" (made with a speech synthesizer) is the whole input. Expected: a text answer that says Paris, and the same answer spoken.

@@ -1,0 +1,3 @@
+out=text
+image=count.ppm
+text=How many black circles are in the image?
