@@ -229,7 +229,7 @@ class MainActivity : Activity() {
         }
         val scroll = ScrollView(this)
         val body = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
-        body.addView(TextView(this).apply { text = "LFM3 SDK samples"; textSize = 26f; setTextColor(foreground) })
+        body.addView(TextView(this).apply { text = getString(R.string.app_name); textSize = 26f; setTextColor(foreground) })
         status = TextView(this).apply { text = "Looking for model…"; textSize = 14f; setPadding(0, dp(8), 0, dp(18)) }
         body.addView(status)
         buttons = samples.chunked(2).flatMap { pair ->
