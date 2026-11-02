@@ -1,12 +1,16 @@
 # IQ9 CLI
 
-The CLI runs LFM3 on the Dragonwing IQ9 using the bundled SDK. It uses files for image, audio, and video input and writes generated speech to WAV files. It does not use a camera, microphone, or audio player.
+The CLI runs LFM3 on the Dragonwing IQ9 using the bundled SDK. It uses files for image, audio, and video input and writes generated speech to WAV files. It does not use a camera, microphone, or audio player. Building it needs GNU `g++` and `make`; a Hexagon SDK or Qualcomm compiler is not needed. Running the model still needs an IQ9 with its FastRPC runtime and a v73 model package.
 
 ## Build
 
 Run these commands from the repository root. The model is downloaded separately; see the [root README](../README.md#models).
 
 ```sh
+# On Ubuntu IQ9, if the GNU tools are missing
+sudo apt-get update
+sudo apt-get install --no-install-recommends g++ make
+
 # On the IQ9 (native GNU C++ toolchain)
 make -C iq9 CXX=g++
 
