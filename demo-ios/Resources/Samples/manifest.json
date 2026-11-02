@@ -1,0 +1,32 @@
+{
+  "source_repository": "zetic-ai/LFM3-demo-app-project",
+  "source_directory": "samples",
+  "files": {
+    "DarwinIntroduction.txt": {
+      "source": "summary/article.txt",
+      "sha256": "8dc2b04859836305782a3574f11a16765727d22e48a10ebcedd3778ebf96707c"
+    },
+    "jfk.wav": {
+      "source": "asr/jfk.wav",
+      "sha256": "59dfb9a4acb36fe2a2affc14bacbee2920ff435cb13cc314a08c13f66ba7860e"
+    },
+    "question.wav": {
+      "source": "voice/question.wav",
+      "sha256": "d1a088c72104579532c90da88445704408334f72dfe2ef30dbcfb3c3e2074d5d"
+    },
+    "count.png": {
+      "source": "image_count/count.ppm",
+      "sha256": "d7a1df18d9a56e90754eae2bcec6ed055a3bbacd124d376bb9c01e3fb3e7cd80",
+      "source_rgb_sha256": "8b58aafbda7955de7f38b9cd9aeb7b50b6e3ceb913f4762987a6e1cc8a1c5cfa",
+      "conversion": "Lossless RGB8 PNG, identical 512x512 pixels to P6 PPM"
+    },
+    "DarwinQuestion.wav": {
+      "source": "Locally synthesized document-related museum question; see DarwinQuestion-source.txt",
+      "sha256": "84b2e493065f697fdabe01dac45d6e6478ba206970448e9605464ef9941cfb72"
+    },
+    "DarwinQuestion-source.txt": {
+      "source": "Locally synthesized document-related museum question; see DarwinQuestion-source.txt",
+      "sha256": "c14c15f4c113be579a60b5044dd185ef17c93ca7ea9b356ba0c6c58aa0bc77f3"
+    }
+  }
+}
