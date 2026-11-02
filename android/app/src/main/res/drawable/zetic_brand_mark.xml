@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="35dp"
+    android:height="34dp"
+    android:viewportWidth="35"
+    android:viewportHeight="34">
+    <!-- Zetic symbol from zetic-web/assets/imgs/Logo.svg. -->
+    <path
+        android:fillColor="#34A9A3"
+        android:pathData="M0,0 H34.4673 V34 H0 Z" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M14.1744,14.0182 L9.50781,28.4723 L9.50781,29.1419 L23.1018,29.1419 L23.1018,28.4723 L12.9061,28.4723 L17.664,13.7336 L14.0109,11.7236 L13.8407,11.8915 C14.0109,12.0869 14.3504,12.6456 14.3504,13.0639 C14.3504,13.4823 14.2802,13.6881 14.184,13.9888 Z" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M20.2902,19.9812 L24.9568,5.5271 L24.9568,4.85742 L13.8398,4.85742 L13.8398,5.5271 L21.5585,5.5271 L16.8006,20.2657 L20.4537,22.2757 L20.6239,22.1078 C20.4537,21.9124 20.1142,21.3537 20.1142,20.9354 C20.1142,20.5171 20.1844,20.3113 20.2806,20.0106 Z" />
+</vector>
