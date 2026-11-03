@@ -36,6 +36,8 @@ adb push models/qualcomm /sdcard/Android/data/ai.zetic.lfm3demo/files/models/
 
 ## Android
 
+See the [Android guide](android/README.md) for model downloads, including both D1 packages, installation, and sample execution.
+
 With Android SDK, NDK 27.0.12077973 and JDK 17 installed:
 
 ```sh
@@ -64,6 +66,8 @@ For the pinned SDK build, model placement, signing and measurement definitions,
 see [demo-ios/README.md](demo-ios/README.md).
 
 ## IQ9
+
+See the [IQ9 guide](iq9/README.md) for GNU build instructions, model downloads, including both D1 packages, and CLI examples.
 
 With a GNU C++ toolchain installed on the IQ9, the included SDK is sufficient:
 

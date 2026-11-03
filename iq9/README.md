@@ -4,7 +4,7 @@ The CLI runs LFM3 on the Dragonwing IQ9 using the bundled SDK. It uses files for
 
 ## Build
 
-Run these commands from the repository root. The model is downloaded separately; see the [root README](../README.md#models).
+Run these commands from the repository root. Download the models separately as described below.
 
 ```sh
 # On Ubuntu IQ9, if the GNU tools are missing
@@ -20,9 +20,37 @@ make -C iq9
 
 The executables are `iq9/out/lfm3_cli` and `iq9/out/d1_example`. The Makefile links against `iq9/sdk/lib/` and embeds a relative library search path, so keep `iq9/out/` and `iq9/sdk/lib/` together when copying them to the board. `make -C iq9 clean` removes the executables.
 
+## Download the models
+
+The demo uses these three model packages on IQ9:
+
+| Package | CLI examples |
+| --- | --- |
+| `lfm3-omni-2b` | Text generation and the six text/image/audio generation samples |
+| `d1-2b` | D1 ticket decisions from text |
+| `d1-omni-2b` | D1 image and audio decisions |
+
+Request access to [ZETIC-ai/LFM3](https://huggingface.co/ZETIC-ai/LFM3) and wait for approval. With the Hugging Face CLI (`hf`) installed, authenticate with the approved account and download the IQ9 v73 packages:
+
+```sh
+hf auth login
+hf download ZETIC-ai/LFM3 --local-dir models \
+  --include "qualcomm/lfm3-omni-2b/v73/*" \
+            "qualcomm/d1-2b/v73/*" \
+            "qualcomm/d1-omni-2b/v73/*"
+```
+
+Run the download from the repository root on the IQ9, or copy the downloaded `models/` directory from the host to the repository root on the IQ9, preserving its structure. Keep the complete packages, including their payload files. The manifests must be at:
+
+```text
+models/qualcomm/lfm3-omni-2b/v73/manifest.json
+models/qualcomm/d1-2b/v73/manifest.json
+models/qualcomm/d1-omni-2b/v73/manifest.json
+```
+
 ## Run
 
-The examples below assume the repository root is the current directory and the v73 package is under `models/qualcomm/lfm3-omni-2b/v73/` on the IQ9. Download it as shown in the root README, then copy that directory to the IQ9 if it was downloaded elsewhere.
+The examples below assume the repository root is the current directory and the v73 package is under `models/qualcomm/lfm3-omni-2b/v73/` on the IQ9.
 
 ```sh
 MODEL=models/qualcomm/lfm3-omni-2b/v73
@@ -52,7 +80,7 @@ Use `--video-frames <directory> --fps 2` for ordered PPM frames. In the interact
 
 ## D1 decisions
 
-The bundled SDK also supports D1 models through `Decision`, which returns calibrated probabilities after one decision pass. Download the v73 `d1-2b` and `d1-omni-2b` packages as shown in the root README. From the repository root:
+The bundled SDK also supports D1 models through `Decision`, which returns calibrated probabilities after one decision pass. After building and downloading the v73 packages above, run from the repository root:
 
 ```sh
 ./iq9/out/d1_example --model models/qualcomm/d1-2b --mode ticket --text-file samples/d1_text/ticket.txt
