@@ -90,7 +90,7 @@ class MainActivity : Activity() {
         else if (pending != null && llm == null && !loading) loadModel()
         else if (pending != null) startPending()
         else if (llm == null && preparedD1 == null && !loading && !busy) {
-            if (d1Dir("d1_image") != null) prepareD1("d1_image") else loadModel()
+            loadModel()
         }
     }
 
