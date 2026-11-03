@@ -14,12 +14,18 @@ you can skip the request. Install the Hugging Face CLI and authenticate with
 the approved account, then download the package for your device:
 
 ```sh
-# Galaxy S25 (v79)
-hf download ZETIC-ai/LFM3 --include "qualcomm/lfm3-omni-2b/v79/*" --local-dir models
 # Galaxy S26 Ultra (v81)
 hf download ZETIC-ai/LFM3 --include "qualcomm/lfm3-omni-2b/v81/*" --local-dir models
+# Galaxy S25 (v79)
+hf download ZETIC-ai/LFM3 --include "qualcomm/lfm3-omni-2b/v79/*" --local-dir models
 # IQ9 (v73)
 hf download ZETIC-ai/LFM3 --include "qualcomm/lfm3-omni-2b/v73/*" --local-dir models
+# Optional D1 decision examples on IQ9 (v73)
+hf download ZETIC-ai/LFM3 --include "qualcomm/d1-2b/v73/*" "qualcomm/d1-omni-2b/v73/*" --local-dir models
+# Optional D1 decision examples on Galaxy S25 (v79)
+hf download ZETIC-ai/LFM3 --include "qualcomm/d1-2b/v79/*" "qualcomm/d1-omni-2b/v79/*" --local-dir models
+# Optional D1 decision examples on Galaxy S26 Ultra (v81)
+hf download ZETIC-ai/LFM3 --include "qualcomm/d1-2b/v81/*" "qualcomm/d1-omni-2b/v81/*" --local-dir models
 ```
 
 For Android, install the app first and copy the downloaded `qualcomm` directory to its external files directory:
@@ -30,6 +36,8 @@ adb push models/qualcomm /sdcard/Android/data/ai.zetic.lfm3demo/files/models/
 
 ## Android
 
+See the [Android guide](android/README.md) for model downloads, including both D1 packages, installation, and sample execution.
+
 With Android SDK, NDK 27.0.12077973 and JDK 17 installed:
 
 ```sh
@@ -38,11 +46,13 @@ cd android
 adb install -r app/build/outputs/apk/debug/app-debug.apk
 ```
 
-Open LFM3 Demo; the app loads Omni with a 2,048-position context. Tap one of six fixed examples: text, image, or audio input, each with text or speech output. The text-to-text example summarizes a long article. Image samples show the input image, and audio samples let you play the input WAV. The app shows the output and its TTFT and TPS. Speech results can be played again; WAV and text results are saved under the app's external `files/results/` directory. The app uses the same bundled sample inputs as the IQ9 CLI.
+Open **LFM3 zetic runtime benchmark**. The six generation examples use LFM3 Omni with a 2,048-position context: text, image, or audio input, each with text or speech output. The text-to-text example summarizes a long article. Image samples show the input image, and audio samples let you play the input WAV. The app shows the output and its TTFT and TPS. Speech results can be played again; WAV and text results are saved under the app's external `files/results/` directory. The app uses the same bundled sample inputs as the IQ9 CLI.
+
+On a v79 or v81 Android device, copying both D1 packages to the same `models/qualcomm/` directory enables **D1-2B · ticket**, **D1-Omni · image**, and **D1-Omni · audio**. The app prepares LFM3 Omni at launch. **Prepare LFM3 Omni**, **Prepare D1-2B**, and **Prepare D1-Omni** select which model stays loaded. One NPU model can be active at a time. Later examples using the selected model skip loading. The screen reports model load time separately from decision time and shows each question, selected answer and all option probabilities. D1 does not generate tokens, so TPS does not apply. The six LFM3 examples continue to use the LFM3 Omni package. D1 Android examples have not been retested on Xiaomi in this update; previous SDK D1 accuracy checks on Xiaomi and IQ9 are recorded in the SDK release notes.
 
 The SDK's Android CPU libraries and CLI executables and the app JNI library are built for 16 KB page alignment. DSP skeletons are Hexagon binaries and are not loaded as Android CPU libraries. Extracted native libraries are required for FastRPC; the app configures this at install time. If model loading fails, check the selected target, the files and the app logcat output for FastRPC or skeleton-loading errors. Do not run another NPU process simultaneously.
 
-For automated sample runs, launch with `adb shell am start -n ai.zetic.lfm3demo/.MainActivity --es scenario summary` (replace `summary` with `tts`, `image`, `vl_audio`, `asr`, or `voice`; `all` runs all six). Results and speech WAV files are saved under the app's external `files/results/` directory.
+For automated sample runs, launch with `adb shell am start -n ai.zetic.lfm3demo/.MainActivity --es scenario summary` (replace `summary` with `tts`, `image`, `vl_audio`, `asr`, `voice`, `d1_text`, `d1_image`, or `d1_audio`; `all` runs the six LFM3 examples). Results and speech WAV files are saved under the app's external `files/results/` directory.
 
 ## iOS
 
@@ -57,6 +67,8 @@ see [demo-ios/README.md](demo-ios/README.md).
 
 ## IQ9
 
+See the [IQ9 guide](iq9/README.md) for GNU build instructions, model downloads, including both D1 packages, and CLI examples.
+
 With a GNU C++ toolchain installed on the IQ9, the included SDK is sufficient:
 
 ```sh
@@ -65,13 +77,16 @@ make
 ./out/lfm3_cli --model ../models/qualcomm/lfm3-omni-2b/v73 "What is the capital of France?"
 ./out/lfm3_cli --model ../models/qualcomm/lfm3-omni-2b/v73 --sample image
 ./out/lfm3_cli --model ../models/qualcomm/lfm3-omni-2b/v73 -i
+./out/d1_example --model ../models/qualcomm/d1-2b --mode ticket --text-file ../samples/d1_text/ticket.txt
+./out/d1_example --model ../models/qualcomm/d1-omni-2b --mode image --ppm ../samples/d1_image/cats.ppm
+./out/d1_example --model ../models/qualcomm/d1-omni-2b --mode audio --wav ../samples/asr/jfk.wav
 ```
 
-Run `./out/lfm3_cli --help` for generation settings and file options. Images and video frames must be P6 PPM files at 512 × 512; audio input is WAV. `--tts out.wav` produces speech and `--voice out.wav` produces text plus speech. Video uses a directory of ordered PPM frames and `--fps`. The CLI does not capture or play media.
+Run `./out/lfm3_cli --help` for generation settings and file options. Images and video frames must be P6 PPM files at 512 × 512; audio input is WAV. `--tts out.wav` produces speech and `--voice out.wav` produces text plus speech. Video uses a directory of ordered PPM frames and `--fps`. `d1_example` uses the same GNU-only build and the SDK `Decision` API. Neither CLI captures or plays media.
 
 ## Samples
 
-The app's six examples are `summary` (long text → text), `tts` (text → audio), `image` (image → text), `vl_audio` (image → audio), `asr` (audio → text), and `voice` (audio → audio). The audio-output examples may also return text. The CLI has additional scenarios. Both use the same files in `samples/`; actual wording varies.
+The app's six generation examples are `summary` (long text → text), `tts` (text → audio), `image` (image → text), `vl_audio` (image → audio), `asr` (audio → text), and `voice` (audio → audio). The audio-output examples may also return text. Three D1 decision examples use a ticket, a photo and natural speech. The CLI has additional scenarios. Both use the same files in `samples/`; actual wording varies.
 
 | Scenario | Input | Expected result |
 | --- | --- | --- |

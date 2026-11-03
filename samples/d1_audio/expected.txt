@@ -1,0 +1,1 @@
+The natural JFK inaugural-address WAV asks Americans to serve their country. D1-Omni should identify a formal English speech and the civic-duty topic. D1 returns probabilities and one decision pass, not generated text or speech.
