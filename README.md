@@ -14,17 +14,17 @@ you can skip the request. Install the Hugging Face CLI and authenticate with
 the approved account, then download the package for your device:
 
 ```sh
-# Galaxy S25 (v79)
-hf download ZETIC-ai/LFM3 --include "qualcomm/lfm3-omni-2b/v79/*" --local-dir models
 # Galaxy S26 Ultra (v81)
 hf download ZETIC-ai/LFM3 --include "qualcomm/lfm3-omni-2b/v81/*" --local-dir models
+# Galaxy S25 (v79)
+hf download ZETIC-ai/LFM3 --include "qualcomm/lfm3-omni-2b/v79/*" --local-dir models
 # IQ9 (v73)
 hf download ZETIC-ai/LFM3 --include "qualcomm/lfm3-omni-2b/v73/*" --local-dir models
 # Optional D1 decision examples on IQ9 (v73)
 hf download ZETIC-ai/LFM3 --include "qualcomm/d1-2b/v73/*" "qualcomm/d1-omni-2b/v73/*" --local-dir models
 # Optional D1 decision examples on Galaxy S25 (v79)
 hf download ZETIC-ai/LFM3 --include "qualcomm/d1-2b/v79/*" "qualcomm/d1-omni-2b/v79/*" --local-dir models
-# Optional D1 decision examples on Xiaomi / SM8850 (v81)
+# Optional D1 decision examples on Galaxy S26 Ultra (v81)
 hf download ZETIC-ai/LFM3 --include "qualcomm/d1-2b/v81/*" "qualcomm/d1-omni-2b/v81/*" --local-dir models
 ```
 

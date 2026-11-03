@@ -21,6 +21,7 @@ Choose the target matching the phone:
 | Device | Target |
 | --- | --- |
 | Galaxy S25 / SM8750 | `v79` |
+| Galaxy S26 Ultra / SM8850 | `v81` |
 | Xiaomi / SM8850 | `v81` |
 
 The demo uses these three model packages:
@@ -34,7 +35,7 @@ The demo uses these three model packages:
 Download all three for the selected phone target:
 
 ```sh
-TARGET=v79  # Use v81 for SM8850
+TARGET=v81  # Galaxy S26 Ultra; use v79 for Galaxy S25
 hf download ZETIC-ai/LFM3 --local-dir models-android \
   --include "qualcomm/lfm3-omni-2b/$TARGET/*" \
             "qualcomm/d1-2b/$TARGET/*" \
@@ -56,12 +57,12 @@ adb -s "$DEVICE_SERIAL" shell mkdir -p /sdcard/Android/data/ai.zetic.lfm3demo/fi
 adb -s "$DEVICE_SERIAL" push models-android/qualcomm /sdcard/Android/data/ai.zetic.lfm3demo/files/models/
 ```
 
-For example, the S25 manifests must end up at:
+For the Galaxy S26 Ultra example, the manifests must end up at:
 
 ```text
-files/models/qualcomm/lfm3-omni-2b/v79/manifest.json
-files/models/qualcomm/d1-2b/v79/manifest.json
-files/models/qualcomm/d1-omni-2b/v79/manifest.json
+files/models/qualcomm/lfm3-omni-2b/v81/manifest.json
+files/models/qualcomm/d1-2b/v81/manifest.json
+files/models/qualcomm/d1-omni-2b/v81/manifest.json
 ```
 
 ## Run
