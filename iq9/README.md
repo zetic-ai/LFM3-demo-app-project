@@ -2,6 +2,12 @@
 
 The CLI runs LFM3 on the Dragonwing IQ9 using the bundled SDK. It uses files for image, audio, and video input and writes generated speech to WAV files. It does not use a camera, microphone, or audio player. Building it needs GNU `g++` and `make`; a Hexagon SDK or Qualcomm compiler is not needed. Running the model still needs an IQ9 with its FastRPC runtime and a v73 model package.
 
+## SDK API reference
+
+This guide covers the three model packages used by the demo examples. The SDK also supports other compatible LFM3 model packages; supported inputs and outputs depend on the selected model and device target.
+
+For SDK usage, see the public headers and their API comments in [`sdk/include/`](sdk/include/): [`zetic_llm.h`](sdk/include/zetic_llm.h) for generation, [`zetic_decision.h`](sdk/include/zetic_decision.h) for D1 decisions, and [`zetic_media.h`](sdk/include/zetic_media.h) for image/audio/video inputs. CLI integration examples are in [`main.cpp`](src/main.cpp) and [`d1_example.cpp`](src/d1_example.cpp).
+
 ## Build
 
 Run these commands from the repository root. Download the models separately as described below.

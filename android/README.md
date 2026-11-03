@@ -2,6 +2,12 @@
 
 Run the host commands below from the repository root. The app uses separately downloaded Qualcomm model packages and the bundled SDK. Android SDK, NDK 27.0.12077973, JDK 17, the Hugging Face CLI (`hf`), and `adb` are required.
 
+## SDK API reference
+
+This guide covers the three model packages used by the demo examples. The SDK also supports other compatible LFM3 model packages; supported inputs and outputs depend on the selected model and device target.
+
+For SDK usage, see the public headers and their API comments in [`sdk/include/`](sdk/include/): [`zetic_llm.h`](sdk/include/zetic_llm.h) for generation, [`zetic_decision.h`](sdk/include/zetic_decision.h) for D1 decisions, and [`zetic_media.h`](sdk/include/zetic_media.h) for image/audio/video inputs. The Android JNI integration is in [`lfm3_jni.cpp`](app/src/main/cpp/lfm3_jni.cpp).
+
 ## Download the models
 
 Request access to [ZETIC-ai/LFM3](https://huggingface.co/ZETIC-ai/LFM3) and wait for approval, then authenticate with the approved account:
