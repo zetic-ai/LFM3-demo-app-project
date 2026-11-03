@@ -1,0 +1,1 @@
+The refund request is present; billing or shipping may be selected depending on the question wording. D1 returns probabilities and one decision pass, not generated text or tokens per second.

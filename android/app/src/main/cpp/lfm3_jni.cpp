@@ -11,9 +11,11 @@
 #include <string>
 #include <sstream>
 #include <iomanip>
+#include <stdexcept>
 #include <vector>
 
 #include <zetic_llm.h>
+#include <zetic_decision.h>
 
 using namespace zetic::mlange;
 
@@ -22,6 +24,8 @@ using namespace zetic::mlange;
 
 namespace {
 std::unique_ptr<LLM> g_llm;
+std::unique_ptr<Decision> g_decision;
+std::string g_decision_path;
 std::vector<Message> g_history;
 std::vector<Part> g_pending;  // parts of the user turn being built
 std::mutex g_mu;              // serializes model operations
@@ -117,6 +121,109 @@ JNIEXPORT void JNICALL Java_ai_zetic_lfm3demo_Native_reset(JNIEnv*, jclass) {
 JNIEXPORT void JNICALL Java_ai_zetic_lfm3demo_Native_cancel(JNIEnv*, jclass) {
   std::lock_guard<std::mutex> life(g_lifetime_mu);
   if (g_llm) g_llm->cancel();  // SDK cancellation is thread-safe during chat
+}
+
+JNIEXPORT void JNICALL Java_ai_zetic_lfm3demo_Native_decisionCancel(JNIEnv*, jclass) {
+  std::lock_guard<std::mutex> life(g_lifetime_mu);
+  if (g_decision) g_decision->cancel();
+}
+
+JNIEXPORT jstring JNICALL Java_ai_zetic_lfm3demo_Native_decisionLoad(JNIEnv* env, jclass, jstring modelDir, jstring libDir) {
+  std::lock_guard<std::mutex> lk(g_mu);
+  try {
+    const auto path = str(env, modelDir);
+    if (g_decision && g_decision_path == path) return jstr(env, "Ok|0");
+    if (g_llm) return jstr(env, "DeviceError|0|close the LFM3 model before loading D1");
+    { std::lock_guard<std::mutex> life(g_lifetime_mu); g_decision.reset(); g_decision_path.clear(); }
+    DecisionOptions options;
+    options.native_lib_dir = str(env, libDir);
+    auto decision = std::make_unique<Decision>(Decision::fromPath(path, options));
+    { std::lock_guard<std::mutex> life(g_lifetime_mu); g_decision = std::move(decision); g_decision_path = path; }
+    return jstr(env, "Ok|1");
+  } catch (const Error& e) { return jstr(env, errText(e)); }
+  catch (const std::exception& e) { return jstr(env, std::string("Internal|0|") + e.what()); }
+}
+
+JNIEXPORT void JNICALL Java_ai_zetic_lfm3demo_Native_decisionUnload(JNIEnv*, jclass) {
+  std::lock_guard<std::mutex> lk(g_mu);
+  std::lock_guard<std::mutex> life(g_lifetime_mu);
+  g_decision.reset();
+  g_decision_path.clear();
+}
+
+// One D1 decision request. Return status|milliseconds|passes|human-readable answers.
+JNIEXPORT jstring JNICALL Java_ai_zetic_lfm3demo_Native_decision(JNIEnv* env, jclass, jstring modelDir,
+                                                                 jstring libDir, jstring kind, jstring state,
+                                                                 jfloatArray pcm, jint rate, jint channels,
+                                                                 jbyteArray rgb, jint width, jint height) {
+  std::lock_guard<std::mutex> lk(g_mu);
+  try {
+    if (g_llm) return jstr(env, "DeviceError|0|close the LFM3 model before loading D1");
+    if (!g_decision || g_decision_path != str(env, modelDir))
+      return jstr(env, "DeviceError|0|D1 model is not prepared");
+    const std::string sample = str(env, kind);
+    std::vector<std::pair<std::string, Question>> questions;
+    std::vector<Part> media;
+    State input = State::Text(str(env, state));
+    if (sample == "d1_text") {
+      questions = {
+          {"refund", Question::Noul("Is the customer asking for a refund?")},
+          {"team", Question::Choice("Which team should handle this?", {{"billing", "Charges, refunds, invoices"},
+                                                                   {"shipping", "Delivery and parcels"},
+                                                                   {"technical", "App or site faults"}})},
+          {"urgency", Question::Score("How urgent is this ticket?", {"low", "medium", "high"})}};
+    } else if (sample == "d1_audio" && pcm && rate > 0 && channels > 0) {
+      input = State::None();
+      const jsize n = env->GetArrayLength(pcm);
+      if (n == 0 || n % channels) throw std::invalid_argument("invalid audio samples");
+      std::vector<float> samples(n);
+      env->GetFloatArrayRegion(pcm, 0, n, samples.data());
+      media.push_back(Part::Aud(Audio::fromPcm(samples.data(), n / channels, rate, channels)));
+      questions = {{"speech", Question::Noul("Is this a formal public speech in English?")},
+                   {"topic", Question::Choice("What is the speaker discussing?",
+                                              {{"civic_duty", "What citizens can do for their country"},
+                                               {"weather", "Weather conditions"},
+                                               {"sports", "Sports events"}})}};
+    } else if (sample == "d1_image" && rgb && width == 512 && height == 512) {
+      input = State::None();
+      std::vector<uint8_t> pixels(512 * 512 * 3);
+      if (env->GetArrayLength(rgb) != static_cast<jsize>(pixels.size()))
+        throw std::invalid_argument("invalid image pixels");
+      env->GetByteArrayRegion(rgb, 0, pixels.size(), reinterpret_cast<jbyte*>(pixels.data()));
+      media.push_back(Part::Img(Image::fromRgb(pixels.data(), width, height)));
+      questions = {{"cat_count", Question::Choice("How many cats are in this image?",
+                                                 {{"0", "No cats"}, {"1", "One cat"},
+                                                  {"2", "Two cats"}, {"3", "Three cats"}})},
+                   {"animal", Question::Choice("What animals are visible?",
+                                               {{"cats", "Cats"}, {"dogs", "Dogs"}, {"other", "Other animals"}})}};
+    } else {
+      throw std::invalid_argument("unknown D1 sample or missing audio");
+    }
+    DecisionResult result = g_decision->systemOne(input, questions, media);
+    if (result.status != Status::Ok) return jstr(env, std::string(statusName(result.status)) + "|0|" + result.error);
+    std::ostringstream out;
+    out << std::fixed << std::setprecision(3);
+    for (size_t i = 0; i < result.answers.size(); ++i) {
+      const auto& [name, answer] = result.answers[i];
+      out << questions[i].second.instructions << "\n";
+      if (answer.type == Question::Type::Noul) {
+        out << "Selected: " << (answer.noul >= 0.5 ? "true" : "false") << "\n"
+            << "  true: " << answer.noul << "  false: " << (1.0 - answer.noul) << "\n";
+      } else {
+        out << "Selected: " << (answer.type == Question::Type::Choice ? answer.choice : answer.legend)
+            << " (" << answer.confidence << ")\n";
+        for (size_t j = 0; j < answer.labels.size() && j < answer.probs.size(); ++j)
+          out << "  " << answer.labels[j] << ": " << answer.probs[j] << "\n";
+      }
+      out << '\n';
+    }
+    return jstr(env, "Ok|" + std::to_string(result.timings.ttft) + "|" +
+                         std::to_string(result.passes) + "|" + out.str());
+  } catch (const Error& e) {
+    return jstr(env, errText(e));
+  } catch (const std::exception& e) {
+    return jstr(env, std::string("Internal|0|") + e.what());
+  }
 }
 
 JNIEXPORT void JNICALL Java_ai_zetic_lfm3demo_Native_addSystem(JNIEnv* env, jclass, jstring text) {

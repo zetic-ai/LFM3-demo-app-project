@@ -18,7 +18,7 @@ make -C iq9 CXX=g++
 make -C iq9
 ```
 
-The executable is `iq9/out/lfm3_cli`. The Makefile links against `iq9/sdk/lib/` and embeds a relative library search path, so keep `iq9/out/` and `iq9/sdk/lib/` together when copying them to the board. `make -C iq9 clean` removes the executable.
+The executables are `iq9/out/lfm3_cli` and `iq9/out/d1_example`. The Makefile links against `iq9/sdk/lib/` and embeds a relative library search path, so keep `iq9/out/` and `iq9/sdk/lib/` together when copying them to the board. `make -C iq9 clean` removes the executables.
 
 ## Run
 
@@ -49,3 +49,15 @@ MODEL=models/qualcomm/lfm3-omni-2b/v73
 The CLI also has `chat`, `image_count`, and `image_ocr` bundled samples. It prints the output and timings, including TTFT and tokens/s. Speech WAVs from `--tts` and `--voice` are written to the requested path; a speech sample writes `sample_<name>.wav` in the current directory. Images and video frames must be binary PPM (P6), 512 × 512. WAV audio can use any sample rate or channel count, up to 30 seconds.
 
 Use `--video-frames <directory> --fps 2` for ordered PPM frames. In the interactive mode, `/image <file.ppm>` and `/audio <file.wav>` attach media to the next turn; `/reset` starts a new conversation and `/exit` leaves. Other options include `--ctx` (default 4096), `--max-tokens`, `--temperature`, `--top-k`, `--top-p`, `--repetition-penalty`, `--seed`, `--verify`, `--lib-dir`, and `--samples-dir`. Run `./iq9/out/lfm3_cli --help` for the complete option list.
+
+## D1 decisions
+
+The bundled SDK also supports D1 models through `Decision`, which returns calibrated probabilities after one decision pass. Download the v73 `d1-2b` and `d1-omni-2b` packages as shown in the root README. From the repository root:
+
+```sh
+./iq9/out/d1_example --model models/qualcomm/d1-2b --mode ticket --text-file samples/d1_text/ticket.txt
+./iq9/out/d1_example --model models/qualcomm/d1-omni-2b --mode image --ppm samples/d1_image/cats.ppm
+./iq9/out/d1_example --model models/qualcomm/d1-omni-2b --mode audio --wav samples/asr/jfk.wav
+```
+
+The ticket example asks about refund, routing team and urgency. D1-Omni classifies a two-cat photo and natural speech from the Kennedy inaugural address. The image credit is in `LICENSES/coco-cats.md`. These examples reuse the installed SDK and need no Hexagon SDK compiler.

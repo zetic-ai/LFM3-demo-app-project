@@ -1,0 +1,1 @@
+The image contains two cats on a pink sofa with remote controls. D1-Omni should select 2 from the cat-count options 0, 1, 2, and 3, and identify cats. D1 returns probabilities and one decision pass, not a generated caption.

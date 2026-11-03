@@ -21,6 +21,12 @@ object Native {
     @JvmStatic external fun reload(): String
     @JvmStatic external fun chatTemplate(): String
     @JvmStatic external fun chat(cfg: DoubleArray, stop: Array<String>?, listener: NativeListener): String
+    @JvmStatic external fun decision(modelDir: String, nativeLibDir: String, kind: String, state: String,
+                                     pcm: FloatArray?, sampleRate: Int, channels: Int,
+                                     rgb: ByteArray?, width: Int, height: Int): String
+    @JvmStatic external fun decisionLoad(modelDir: String, nativeLibDir: String): String
+    @JvmStatic external fun decisionUnload()
+    @JvmStatic external fun decisionCancel()
 }
 
 interface NativeListener {
