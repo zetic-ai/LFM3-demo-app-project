@@ -22,5 +22,10 @@ out/d1_example: src/d1_example.cpp $(SDK)/include/zetic_decision.h $(SDK)/lib/li
 	$(CXX) $(CXXFLAGS) -I$(SDK)/include $< -o $@ -L$(SDK)/lib -lzetic_mlange_hexagon \
 	  -Wl,-rpath,'$$ORIGIN/../$(SDK)/lib' -Wl,--allow-shlib-undefined
 
+out/sdk_worker: gui/sdk_worker.cpp gui/vendor/json.hpp $(SDK)/include/zetic_decision.h $(SDK)/lib/libzetic_mlange_hexagon.so
+	@mkdir -p out
+	$(CXX) $(CXXFLAGS) -pthread -I$(SDK)/include $< -o $@ -L$(SDK)/lib -lzetic_mlange_hexagon \
+	  -Wl,-rpath,'$$ORIGIN/../$(SDK)/lib' -Wl,--allow-shlib-undefined
+
 clean:
 	rm -rf out

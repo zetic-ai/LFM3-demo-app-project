@@ -1,0 +1,62 @@
+{
+  "host": "127.0.0.1",
+  "port": 8765,
+  "llama_port": 18765,
+  "switch_delay_seconds": 5,
+  "default_model": "omni",
+  "models": {
+    "omni": {
+      "name": "LFM3 Omni 2B",
+      "kind": "generation",
+      "capabilities": ["text", "image", "audio", "video", "speech"],
+      "sdk": "~/lfm3-comparison-models/lfm3-omni-2b",
+      "gguf": "~/llamacpp/omni/LFM3-Omni-2B-Q4_0.gguf",
+      "mmproj": "~/llamacpp/omni/mmproj-LFM3-Omni-2B-F16.gguf",
+      "llama_dir": "~/llamacpp/b12004"
+    },
+    "text": {
+      "name": "LFM3 1.7B",
+      "kind": "generation",
+      "capabilities": ["text"],
+      "sdk": "~/zsdk_rc/models/lfm3-1.7b",
+      "gguf": "~/llamacpp/gguf/LFM3-1.7B-QAD-Q4_0.gguf",
+      "llama_dir": "~/llamacpp/b11946"
+    },
+    "vision": {
+      "name": "LFM3 VL 2B",
+      "kind": "generation",
+      "capabilities": ["text", "image", "video"],
+      "sdk": "~/zsdk_rc/models/lfm3-vl-2b",
+      "gguf": "~/llamacpp/gguf/LFM3-VL-2B-QAD-Q4_0.gguf",
+      "mmproj": "~/llamacpp/gguf/mmproj-LFM3-VL-2B-F16.gguf",
+      "llama_dir": "~/llamacpp/b11946"
+    },
+    "audio": {
+      "name": "LFM3 Audio 2B",
+      "kind": "generation",
+      "capabilities": ["text", "audio", "speech"],
+      "sdk": "~/zsdk_rc/models/lfm3-audio-2b",
+      "gguf": "~/llamacpp/gguf/LFM3-Audio-2B-Q4_0.gguf",
+      "mmproj": "~/llamacpp/gguf/mmproj-LFM3-Audio-2B-F16.gguf",
+      "llama_dir": "~/llamacpp/b11946"
+    },
+    "d1": {
+      "name": "D1 2B",
+      "kind": "decision",
+      "capabilities": ["text", "image"],
+      "sdk": "~/zsdk_d1/models/d1-2b",
+      "gguf": "~/llamacpp/d1/d1-2B-Q4_0.gguf",
+      "mmproj": "~/llamacpp/d1/mmproj-d1-2B-F16.gguf",
+      "llama_dir": "~/llamacpp/b11946"
+    },
+    "d1omni": {
+      "name": "D1 Omni 2B",
+      "kind": "decision",
+      "capabilities": ["text", "image", "audio"],
+      "sdk": "~/zsdk_d1/models/d1-omni-2b",
+      "gguf": "~/llamacpp/d1/d1-Omni-2B-Q4_0.gguf",
+      "mmproj": "~/llamacpp/d1/mmproj-d1-Omni-2B-F16.gguf",
+      "llama_dir": "~/llamacpp/b11946"
+    }
+  }
+}

@@ -67,6 +67,8 @@ see [demo-ios/README.md](demo-ios/README.md).
 
 ## IQ9
 
+The [IQ9 GUI playground](iq9/gui/README.md) adds a local Ubuntu chatbot, sequential ZETIC/llama.cpp comparison, media samples and playback, and a D1 question editor.
+
 See the [IQ9 guide](iq9/README.md) for GNU build instructions, model downloads, including both D1 packages, and CLI examples.
 
 With a GNU C++ toolchain installed on the IQ9, the included SDK is sufficient:

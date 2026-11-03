@@ -1,0 +1,44 @@
+{
+  "title": "IQ9 · LFM3 Omni 2B",
+  "date": "2026-10-31",
+  "source": "cg_research/docs/lfm3-17b/iq9-multimodal.md §7.1",
+  "note": "Recorded IQ9 module measurements, not a measurement of this chat. llama.cpp b12004 HTP 2-NSP; ZETIC Hexagon runtime. Values below use the midpoint of reported ranges. Speech used the recorded 1-NSP ZETIC configuration. Current SDK results may differ.",
+  "items": [
+    {
+      "label": "Image + audio",
+      "metric": "First response",
+      "unit": "ms",
+      "lower_better": true,
+      "zetic": 306.8,
+      "llama": 925.5,
+      "conditions": "cats 512×512 + JFK audio; 420 prompt positions; 256 generated tokens; includes media preprocessing, excludes file reading and model loading"
+    },
+    {
+      "label": "Image understanding",
+      "metric": "First response",
+      "unit": "ms",
+      "lower_better": true,
+      "zetic": 230.05,
+      "llama": 618.5,
+      "conditions": "cats 512×512; Describe the image in detail; 275 prompt positions; 256 generated tokens"
+    },
+    {
+      "label": "Speech understanding",
+      "metric": "First response",
+      "unit": "ms",
+      "lower_better": true,
+      "zetic": 603.8,
+      "llama": 1242.5,
+      "conditions": "30-second audio + 1024 text tokens; 1423 prompt positions; 256 generated tokens"
+    },
+    {
+      "label": "Text to speech",
+      "metric": "Realtime speed",
+      "unit": "× realtime",
+      "lower_better": false,
+      "zetic": 2.75,
+      "llama": 1.06,
+      "conditions": "tts_fox; ZETIC LM 1 NSP; llama.cpp LM HTP 2-NSP + CPU depthformer/codec; audio duration divided by generation wall time"
+    }
+  ]
+}

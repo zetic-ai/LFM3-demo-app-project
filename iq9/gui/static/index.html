@@ -1,0 +1,323 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>LFM3 · ZETIC playground</title>
+    <link rel="stylesheet" href="/static/style.css" />
+  </head>
+  <body>
+    <div class="app">
+      <aside class="sidebar">
+        <a class="brand" href="/"
+          ><img class="brand-logo" src="/static/zetic.png" alt="ZETIC AI"
+        /></a>
+        <div class="device">
+          <span class="dot"></span> Dragonwing IQ9
+          <span class="device-chip">LOCAL</span>
+        </div>
+        <button id="new-chat" class="new-chat">
+          <span>＋</span> New conversation <small>↗</small>
+        </button>
+        <div class="sidebar-section">
+          <span class="eyebrow">THE DIFFERENCE, IN NUMBERS</span
+          ><span id="chart-mode" class="tag">REFERENCE</span>
+        </div>
+        <section class="speed-card">
+          <div class="speed-top">
+            <span id="speed-label">Faster first response</span
+            ><span class="spark">✳</span>
+          </div>
+          <div id="speed-value" class="speed-value">3.0<span>×</span></div>
+          <p id="speed-context">LFM3 Omni · image + audio</p>
+          <div class="speed-rule"></div>
+          <span id="speed-caption">Same IQ9. Two inference engines.</span>
+        </section>
+        <select id="chart-select" aria-label="Performance metric"></select>
+        <div id="chart" class="chart"></div>
+        <button id="chart-source" class="text-button source-button">
+          Recorded reference · view conditions ↗
+        </button>
+        <div class="sidebar-divider"></div>
+        <div class="sidebar-section">
+          <span class="eyebrow">CONVERSATIONS</span
+          ><button
+            id="export-chat"
+            class="icon-button"
+            title="Export conversation"
+            aria-label="Export conversation"
+          >
+            ↓</button
+          ><button
+            id="import-chat"
+            class="icon-button"
+            title="Import conversation"
+            aria-label="Import conversation"
+          >
+            ↑
+          </button>
+        </div>
+        <div id="recents" class="recents"></div>
+        <div class="sidebar-bottom">
+          <span class="tiny-chip">NO CLOUD REQUIRED</span>
+          <p>Your models. Your data.<br />Right here on your device.</p>
+        </div>
+      </aside>
+      <main class="workspace">
+        <header class="toolbar">
+          <div class="workspace-title">LFM3 <span>playground</span></div>
+          <div class="toolbar-actions">
+            <span id="connection" class="connection">Connecting…</span
+            ><button
+              id="settings-open"
+              class="icon-button settings-button"
+              aria-label="Open settings"
+            >
+              ⚙
+            </button>
+          </div>
+        </header>
+        <div class="modelbar">
+          <div class="select-group">
+            <label for="model">MODEL</label
+            ><select id="model"></select>
+          </div>
+          <div class="engine-group">
+            <label>ENGINE</label>
+            <div class="segmented" id="engine-picker">
+              <button class="active" data-engine="zetic">
+                ZETIC <span>Hexagon</span></button
+              ><button data-engine="llama">llama.cpp <span>HTP</span></button>
+            </div>
+          </div>
+          <button id="prepare" class="prepare">Prepare model</button
+          ><label class="compare-toggle"
+            ><input id="compare" type="checkbox" /><span class="switch"></span
+            >Compare</label
+          >
+        </div>
+        <div id="runtime-status" class="runtime-status" role="status">
+          <span class="dot"></span
+          ><span id="status-text">Ready when you are</span>
+        </div>
+        <div class="content-row">
+          <section
+            id="conversation"
+            class="conversation"
+            aria-label="Conversation"
+          >
+            <div id="welcome" class="welcome">
+              <div class="welcome-symbol">✳</div>
+              <span class="eyebrow">POWERED BY LFM3 · RUNNING ON IQ9</span>
+              <h1>Intelligence, right here.</h1>
+              <p>
+                Chat, see, listen, and make decisions.<br />Choose an engine.
+                Experience the difference.
+              </p>
+              <div id="sample-grid" class="sample-grid"></div>
+              <div class="welcome-note">
+                <span>◉</span> Text · Images · Audio · Video · Decisions
+              </div>
+            </div>
+            <div id="messages" class="messages" aria-live="polite"></div>
+          </section>
+          <aside id="decision-panel" class="decision-panel" hidden>
+            <div class="decision-heading">
+              <div>
+                <span class="eyebrow">DECISION STUDIO</span>
+                <h2>Ask with precision.</h2>
+              </div>
+              <span class="tag">D1</span>
+            </div>
+            <p class="panel-help">
+              Define questions and possible answers. Evaluate them together
+              against your text or media.
+            </p>
+            <div id="questions"></div>
+            <button id="add-question" class="add-question">
+              ＋ Add question</button
+            ><label class="json-state"
+              ><input id="json-state" type="checkbox" /> Treat input as JSON
+              state</label
+            >
+            <p class="panel-footnote">
+              Noul · true / false<br />Choice · named options<br />Score ·
+              ordered levels
+            </p>
+          </aside>
+        </div>
+        <div class="composer-wrap">
+          <div id="attachment-list" class="attachment-list"></div>
+          <div class="composer">
+            <textarea
+              id="prompt"
+              placeholder="Message LFM3…"
+              rows="2"
+              aria-label="Message"
+            ></textarea>
+            <div class="composer-tools">
+              <div class="composer-left">
+                <button
+                  id="attach"
+                  class="icon-button"
+                  title="Attach image, audio, video or text"
+                  aria-label="Attach file"
+                >
+                  ＋</button
+                ><button id="samples-open" class="tool-button">✳ Samples</button
+                ><span class="composer-divider"></span
+                ><label for="output">Reply</label
+                ><select id="output">
+                  <option value="text">Text</option>
+                  <option value="both">Text + speech</option>
+                  <option value="audio">Speech</option>
+                </select>
+              </div>
+              <div class="composer-right">
+                <span id="input-count"></span
+                ><button id="stop" class="stop-button" hidden>■ Stop</button
+                ><button
+                  id="send"
+                  class="send-button"
+                  aria-label="Send message"
+                >
+                  Send <span>↑</span>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="composer-caption">
+            <span id="model-caption">LFM3 Omni · Context 2,048</span
+            ><span>Enter to send · Shift + Enter for a new line</span>
+          </div>
+        </div>
+      </main>
+    </div>
+    <input
+      id="file-input"
+      type="file"
+      multiple
+      hidden
+      accept="image/*,audio/*,video/*,.txt,.md,.json,.csv"
+    /><input id="import-input" type="file" accept="application/json" hidden />
+    <dialog id="settings">
+      <div class="dialog-header">
+        <div>
+          <span class="eyebrow">MAKE IT YOURS</span>
+          <h2>Generation settings</h2>
+        </div>
+        <button class="icon-button" data-close aria-label="Close">×</button>
+      </div>
+      <form id="settings-form">
+        <div class="settings-grid">
+          <label
+            >Context length<input
+              name="context"
+              type="number"
+              min="512"
+              max="131072"
+              step="1"
+              value="2048" /></label
+          ><label
+            >Maximum output tokens<input
+              name="max_tokens"
+              type="number"
+              min="1"
+              max="32768"
+              value="256" /></label
+          ><label
+            >Temperature<input
+              name="temperature"
+              type="number"
+              min="0"
+              max="2"
+              step="0.05"
+              value="0.1" /></label
+          ><label
+            >Top P<input
+              name="top_p"
+              type="number"
+              min="0"
+              max="1"
+              step="0.01"
+              value="0.95" /></label
+          ><label
+            >Top K<input
+              name="top_k"
+              type="number"
+              min="0"
+              max="1000"
+              value="50" /></label
+          ><label
+            >Repetition penalty<input
+              name="repetition_penalty"
+              type="number"
+              min="0"
+              max="3"
+              step="0.05"
+              value="1.1" /></label
+          ><label
+            >Seed<input name="seed" type="number" min="0" value="1" /></label
+          ><label
+            >Maximum speech seconds<input
+              name="max_audio_seconds"
+              type="number"
+              min="0.1"
+              max="30"
+              step="0.1"
+              value="30" /></label
+          ><label
+            >D1 questions per pass<select name="set_size">
+              <option value="16">16 · bundled questions</option>
+              <option value="1">1 · one question per pass</option>
+            </select></label
+          >
+        </div>
+        <label class="check-row"
+          ><input type="checkbox" name="calibrate" checked /> Apply D1
+          calibration (ZETIC)</label
+        ><label class="check-row"
+          ><input type="checkbox" name="cache_prompt" checked /> Reuse prompt
+          cache</label
+        ><label class="check-row"
+          ><input type="checkbox" name="autoplay" checked /> Play generated
+          speech as it arrives</label
+        ><label class="system-label"
+          >System prompt<textarea
+            name="system"
+            rows="3"
+            placeholder="Optional instructions for the assistant"
+          ></textarea>
+        </label>
+        <details class="model-paths">
+          <summary>Model paths & runtime details</summary>
+          <div id="paths"></div>
+        </details>
+        <div class="dialog-footer">
+          <button type="button" id="unload" class="text-button">
+            Unload model & release IQ9</button
+          ><button type="submit" class="primary-button">Save settings</button>
+        </div>
+      </form>
+    </dialog>
+    <dialog id="samples-dialog">
+      <div class="dialog-header">
+        <div>
+          <span class="eyebrow">A GOOD PLACE TO START</span>
+          <h2>Try something.</h2>
+        </div>
+        <button class="icon-button" data-close aria-label="Close">×</button>
+      </div>
+      <div id="sample-dialog-grid" class="sample-grid"></div>
+    </dialog>
+    <dialog id="source-dialog">
+      <div class="dialog-header">
+        <h2>Behind the numbers</h2>
+        <button class="icon-button" data-close aria-label="Close">×</button>
+      </div>
+      <div id="source-details"></div>
+    </dialog>
+    <div id="toast" class="toast" role="alert" hidden></div>
+    <script src="/static/app.js"></script>
+  </body>
+</html>

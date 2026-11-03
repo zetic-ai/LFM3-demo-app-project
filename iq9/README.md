@@ -1,5 +1,7 @@
 # IQ9 CLI
 
+For the Ubuntu desktop chatbot with ZETIC/llama.cpp comparison, media playback, and editable D1 questions, see the [IQ9 GUI guide](gui/README.md).
+
 The CLI runs LFM3 on the Dragonwing IQ9 using the bundled SDK. It uses files for image, audio, and video input and writes generated speech to WAV files. It does not use a camera, microphone, or audio player. Building it needs GNU `g++` and `make`; a Hexagon SDK or Qualcomm compiler is not needed. Running the model still needs an IQ9 with its FastRPC runtime and a v73 model package.
 
 ## SDK API reference
