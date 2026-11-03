@@ -12,6 +12,7 @@ import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import android.view.WindowInsets
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -361,6 +362,12 @@ class MainActivity : Activity() {
             orientation = LinearLayout.VERTICAL
             setPadding(dp(20), dp(20), dp(20), dp(20))
             setBackgroundColor(if (dark) 0xff171717.toInt() else Color.WHITE)
+            setOnApplyWindowInsetsListener { view, windowInsets ->
+                val safe = windowInsets.getInsets(WindowInsets.Type.systemBars() or WindowInsets.Type.displayCutout())
+                view.setPadding(dp(20) + safe.left, dp(20) + safe.top,
+                    dp(20) + safe.right, dp(20) + safe.bottom)
+                windowInsets
+            }
         }
         val scroll = ScrollView(this)
         val body = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
@@ -465,6 +472,7 @@ class MainActivity : Activity() {
         scroll.addView(body)
         root.addView(scroll, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))
         setContentView(root)
+        root.requestApplyInsets()
         updateButtons()
     }
 }
