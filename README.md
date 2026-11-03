@@ -15,7 +15,7 @@ Default download example: **Galaxy S26 Ultra (`v81`)**. The guide also lists the
 3. Download the three demo models and copy them to the phone.
 4. Tap a sample and check its output and timings.
 
-**Finished when:** text appears under **Output** with **TTFT / TPS**, or a D1 example shows a selected answer and option probabilities. [See example screens](android/README.md#5-run-the-first-example).
+**Finished when:** text appears under **Output** with **TTFT / TPS**, or a D1 example shows a selected answer and option probabilities. [See the loaded app](android/README.md#5-run-the-first-example).
 
 ## IQ9
 

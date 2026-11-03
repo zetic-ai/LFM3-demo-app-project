@@ -117,11 +117,9 @@ adb -s "$DEVICE_SERIAL" shell am start -n ai.zetic.lfm3demo/.MainActivity
 
 **Check:** a summary of Darwin's introduction appears, followed by **TTFT** and **TPS**. You have completed the first run.
 
-These are actual Xiaomi / SM8850 (`v81`) screens. The default download example above remains Galaxy S26 Ultra.
+After installation and model setup, the loaded app looks like this on Xiaomi / SM8850 (`v81`). The default download example above remains Galaxy S26 Ultra.
 
-| App ready | Text → text result (scroll down) |
-| --- | --- |
-| <img src="docs/images/xiaomi-home.jpg" alt="Xiaomi app with LFM3 Omni loaded and sample buttons ready" width="300"> | <img src="docs/images/xiaomi-summary.jpg" alt="Xiaomi text summary output with TTFT and TPS" width="300"> |
+<img src="docs/images/xiaomi-home.jpg" alt="Xiaomi app with LFM3 Omni loaded and sample buttons ready" width="300">
 
 ## 6. Check the results
 
@@ -137,13 +135,7 @@ The app switches models automatically. Use **Prepare LFM3 Omni**, **Prepare D1-2
 
 **Check:** D1 shows **Load**, **Decision**, and the pass count below the answers. A repeat run with the same loaded model shows **Load 0 ms**. D1 returns decisions, so it has no TPS.
 
-Actual Xiaomi D1 results are shown below. Exact wording, probabilities, and timings can vary.
-
-| D1-2B: ticket | D1-Omni: image |
-| --- | --- |
-| <img src="docs/images/xiaomi-d1-ticket.jpg" alt="Xiaomi D1 ticket questions and all answer probabilities" width="300"> | <img src="docs/images/xiaomi-d1-image.jpg" alt="Xiaomi D1 image cat-count choices and probabilities" width="300"> |
-
-Cat photo credit and license: [Cats and remote controllers](../LICENSES/coco-cats.md).
+Exact wording, probabilities, and timings can vary.
 
 ## More samples
 
