@@ -31,7 +31,16 @@ Target: **Dragonwing IQ9 (`v73`)**. Build with GNU `g++` and `make`.
 
 ## iOS
 
-Follow the existing [iOS setup guide](demo-ios/README.md).
+**[Start the iOS guide →](demo-ios/README.md)**
+
+Target: **iPhone arm64, iOS 18 or later**. Use a Mac with Xcode, CMake, Python, and an Apple development team configured for signing.
+
+1. Connect and unlock the iPhone; enable Developer Mode.
+2. Follow the guide's download helper to get the four Apple model bundles.
+3. Run its build-and-run helper to build, sign, install, copy the models, and launch the app.
+4. Select one of the six samples and check its output.
+
+**Finished when:** the selected sample shows its input, generated text or playable audio, and the available timing metrics.
 
 ## Models used by the Android and IQ9 examples
 
