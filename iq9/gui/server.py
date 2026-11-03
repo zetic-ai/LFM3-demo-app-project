@@ -321,6 +321,8 @@ class Runtime:
         return f'http://127.0.0.1:{self.config.get("llama_port",18765)}{path}'
 
     async def cancel(self):
+        if self.cancelled:
+            return
         self.cancelled = True
         await self.worker.send({"op": "cancel"})
         # SDK supports cooperative cancel. HTTP/realtime tasks are cancelled and their model process released.
@@ -1148,6 +1150,9 @@ class App:
                         load_ms = await self.runtime.prepare(
                             engine, q["model"], q["settings"], q["output"], emit
                         )
+                        if self.runtime.cancelled:
+                            await emit({"event": "cancelled"})
+                            break
                         await emit({"event": "loaded", "load_ms": load_ms})
                         started = time.perf_counter()
                         if engine == "zetic":

@@ -152,6 +152,29 @@ class ApiTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(response.status, 400)
         self.assertIn("unique", (await response.json())["error"])
 
+    async def test_cancel_is_idempotent(self):
+        runtime = self.client.app["gui"].runtime
+        sent = []
+        async def send(message):
+            sent.append(message)
+        runtime.worker.send = send
+        await runtime.cancel()
+        await runtime.cancel()
+        self.assertEqual(sent, [{"op": "cancel"}])
+
+    async def test_stop_during_load_does_not_start_inference(self):
+        runtime = self.client.app["gui"].runtime
+        async def prepare(*args):
+            runtime.cancelled = True
+            return 100
+        runtime.prepare = prepare
+        response = await self.client.post("/api/run", json={
+            "model": "omni", "messages": [{"role": "user", "text": "Hello"}]
+        })
+        events = [json.loads(line) for line in (await response.text()).splitlines()]
+        self.assertEqual([e["event"] for e in events], ["run_start", "cancelled", "complete"])
+        self.assertTrue(events[-1]["cancelled"])
+
 
 if __name__ == "__main__":
     unittest.main()
