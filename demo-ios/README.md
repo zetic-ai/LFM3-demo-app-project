@@ -1,5 +1,7 @@
 # LFM3 zetic runtime benchmark
 
+**Installing and running the demo? Start with the [step-by-step quick start](QUICKSTART.md).** The sections below are the technical reference.
+
 A simple iOS SwiftUI demo with six example buttons, actual input, model output, text TTFT/decode tok/s, and generated-audio playback. Each example automatically chooses its designated optimized model. There is no model picker, import screen, input-length panel or measurement-details UI. Models and credentials are supplied separately; no llama.cpp runtime or comparative speed claim is embedded.
 
 ## Models and download

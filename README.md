@@ -31,7 +31,7 @@ Target: **Dragonwing IQ9 (`v73`)**. Build with GNU `g++` and `make`.
 
 ## iOS
 
-**[Start the iOS guide →](demo-ios/README.md)**
+**[Start the iOS guide →](demo-ios/QUICKSTART.md)**
 
 Target: **iPhone arm64, iOS 18 or later**. Use a Mac with Xcode, CMake, Python, and an Apple development team configured for signing.
 
