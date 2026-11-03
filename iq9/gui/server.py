@@ -357,7 +357,11 @@ class Runtime:
         for m in messages:
             content = []
             for a in m.get("attachments", []):
-                media = Path(a["path"]).read_bytes() if a.get("path") else b""
+                media = (
+                    Path(a["path"]).read_bytes()
+                    if a.get("path") and a["type"] in ("image", "audio")
+                    else b""
+                )
                 if a["type"] == "image":
                     content.append(
                         {
@@ -417,7 +421,10 @@ class Runtime:
         }
         async with self.client.post(self.url("/v1/chat/completions"), json=body) as r:
             if r.status != 200:
-                raise ValueError((await r.text())[:1500])
+                detail = (await r.text())[:1500]
+                if "video input is not supported" in detail:
+                    detail = "The installed llama.cpp build does not support video input; ZETIC video results are unaffected."
+                raise ValueError(detail)
             while True:
                 line = await r.content.readline()
                 if not line:

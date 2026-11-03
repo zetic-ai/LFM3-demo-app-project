@@ -191,6 +191,17 @@ void run(const json &q) {
         msg.content = parts(m);
         history.push_back(std::move(msg));
       }
+      if (mode != "text") {
+        bool has_system = false;
+        for (const auto &m : history)
+          has_system = has_system || m.role == Role::System;
+        if (!has_system)
+          history.insert(
+              history.begin(),
+              Message::System(mode == "audio"
+                                  ? "Perform TTS in American English using a female voice."
+                                  : "Respond with interleaved text and audio."));
+      }
       auto inspect = llm->inspect(history, g);
       if (inspect.rows + g.max_tokens > llm->capabilities().max_context)
         throw std::runtime_error(
