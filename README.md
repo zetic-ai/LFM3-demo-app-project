@@ -1,101 +1,55 @@
 # LFM3 on ZETIC Engine
 
-A multimodal SDK sample project with Android and iOS apps and a file-based IQ9 CLI. The models are not included. Access to the gated `ZETIC-ai/LFM3` Hugging Face repository and a Hugging Face login are required. The bundled SDKs and their dependencies are subject to their respective licenses.
+Run text, image, audio, and D1 decision examples with the bundled SDK.
 
-This demo uses a separately downloaded model. Android uses `adb push`; the iOS
-demo uses an already downloaded optimized model directory in its app Documents.
-See [iOS setup](demo-ios/README.md) for its package validation and SDK build.
-
-## Models
-
-First open [ZETIC-ai/LFM3](https://huggingface.co/ZETIC-ai/LFM3), select
-**Request access**, and wait for approval. If access has already been granted,
-you can skip the request. Install the Hugging Face CLI and authenticate with
-the approved account, then download the package for your device:
-
-```sh
-# Galaxy S26 Ultra (v81)
-hf download ZETIC-ai/LFM3 --include "qualcomm/lfm3-omni-2b/v81/*" --local-dir models
-# Galaxy S25 (v79)
-hf download ZETIC-ai/LFM3 --include "qualcomm/lfm3-omni-2b/v79/*" --local-dir models
-# IQ9 (v73)
-hf download ZETIC-ai/LFM3 --include "qualcomm/lfm3-omni-2b/v73/*" --local-dir models
-# Optional D1 decision examples on IQ9 (v73)
-hf download ZETIC-ai/LFM3 --include "qualcomm/d1-2b/v73/*" "qualcomm/d1-omni-2b/v73/*" --local-dir models
-# Optional D1 decision examples on Galaxy S25 (v79)
-hf download ZETIC-ai/LFM3 --include "qualcomm/d1-2b/v79/*" "qualcomm/d1-omni-2b/v79/*" --local-dir models
-# Optional D1 decision examples on Galaxy S26 Ultra (v81)
-hf download ZETIC-ai/LFM3 --include "qualcomm/d1-2b/v81/*" "qualcomm/d1-omni-2b/v81/*" --local-dir models
-```
-
-For Android, install the app first and copy the downloaded `qualcomm` directory to its external files directory:
-
-```sh
-adb push models/qualcomm /sdcard/Android/data/ai.zetic.lfm3demo/files/models/
-```
+**Choose your platform and follow its numbered setup guide.** Models are downloaded separately; request access to [ZETIC-ai/LFM3](https://huggingface.co/ZETIC-ai/LFM3) before downloading.
 
 ## Android
 
-See the [Android guide](android/README.md) for model downloads, including both D1 packages, installation, and sample execution.
+**[Start the Android guide →](android/README.md)**
 
-With Android SDK, NDK 27.0.12077973 and JDK 17 installed:
+Default download example: **Galaxy S26 Ultra (`v81`)**. The guide also lists the target for Galaxy S25 and Xiaomi.
 
-```sh
-cd android
-./gradlew assembleDebug
-adb install -r app/build/outputs/apk/debug/app-debug.apk
-```
+1. Prepare your computer and connect the phone.
+2. Build and install the app.
+3. Download the three demo models and copy them to the phone.
+4. Tap a sample and check its output and timings.
 
-Open **LFM3 zetic runtime benchmark**. The six generation examples use LFM3 Omni with a 2,048-position context: text, image, or audio input, each with text or speech output. The text-to-text example summarizes a long article. Image samples show the input image, and audio samples let you play the input WAV. The app shows the output and its TTFT and TPS. Speech results can be played again; WAV and text results are saved under the app's external `files/results/` directory. The app uses the same bundled sample inputs as the IQ9 CLI.
-
-On a v79 or v81 Android device, copying both D1 packages to the same `models/qualcomm/` directory enables **D1-2B · ticket**, **D1-Omni · image**, and **D1-Omni · audio**. The app prepares LFM3 Omni at launch. **Prepare LFM3 Omni**, **Prepare D1-2B**, and **Prepare D1-Omni** select which model stays loaded. One NPU model can be active at a time. Later examples using the selected model skip loading. The screen reports model load time separately from decision time and shows each question, selected answer and all option probabilities. D1 does not generate tokens, so TPS does not apply. The six LFM3 examples continue to use the LFM3 Omni package. D1 Android examples have not been retested on Xiaomi in this update; previous SDK D1 accuracy checks on Xiaomi and IQ9 are recorded in the SDK release notes.
-
-The SDK's Android CPU libraries and CLI executables and the app JNI library are built for 16 KB page alignment. DSP skeletons are Hexagon binaries and are not loaded as Android CPU libraries. Extracted native libraries are required for FastRPC; the app configures this at install time. If model loading fails, check the selected target, the files and the app logcat output for FastRPC or skeleton-loading errors. Do not run another NPU process simultaneously.
-
-For automated sample runs, launch with `adb shell am start -n ai.zetic.lfm3demo/.MainActivity --es scenario summary` (replace `summary` with `tts`, `image`, `vl_audio`, `asr`, `voice`, `d1_text`, `d1_image`, or `d1_audio`; `all` runs the six LFM3 examples). Results and speech WAV files are saved under the app's external `files/results/` directory.
-
-## iOS
-
-The iOS demo uses LFM3-1.7B, LFM3-Audio-2B, LFM3-VL-2B and LFM3-Omni-2B
-with the included iOS SDK. Six sample scenarios
-select the matching model automatically. The app displays the input, generated
-output and measured text or speech timings. Models are supplied separately;
-llama.cpp is not included.
-
-For the pinned SDK build, model placement, signing and measurement definitions,
-see [demo-ios/README.md](demo-ios/README.md).
+**Finished when:** text appears under **Output** with **TTFT / TPS**, or a D1 example shows a selected answer and option probabilities. [See the loaded app](android/README.md#5-run-the-first-example).
 
 ## IQ9
 
-See the [IQ9 guide](iq9/README.md) for GNU build instructions, model downloads, including both D1 packages, and CLI examples.
+**[Start the IQ9 guide →](iq9/README.md)**
 
-With a GNU C++ toolchain installed on the IQ9, the included SDK is sufficient:
+Target: **Dragonwing IQ9 (`v73`)**. Build with GNU `g++` and `make`.
 
-```sh
-cd iq9
-make
-./out/lfm3_cli --model ../models/qualcomm/lfm3-omni-2b/v73 "What is the capital of France?"
-./out/lfm3_cli --model ../models/qualcomm/lfm3-omni-2b/v73 --sample image
-./out/lfm3_cli --model ../models/qualcomm/lfm3-omni-2b/v73 -i
-./out/d1_example --model ../models/qualcomm/d1-2b --mode ticket --text-file ../samples/d1_text/ticket.txt
-./out/d1_example --model ../models/qualcomm/d1-omni-2b --mode image --ppm ../samples/d1_image/cats.ppm
-./out/d1_example --model ../models/qualcomm/d1-omni-2b --mode audio --wav ../samples/asr/jfk.wav
-```
+1. Prepare the IQ9 and build the two CLI programs.
+2. Download the three demo models.
+3. Run a text sample, then the D1 examples.
 
-Run `./out/lfm3_cli --help` for generation settings and file options. Images and video frames must be P6 PPM files at 512 × 512; audio input is WAV. `--tts out.wav` produces speech and `--voice out.wav` produces text plus speech. Video uses a directory of ordered PPM frames and `--fps`. `d1_example` uses the same GNU-only build and the SDK `Decision` API. Neither CLI captures or plays media.
+**Finished when:** the terminal prints an answer and timings, or a D1 selected answer and option probabilities.
 
-## Samples
+## iOS
 
-The app's six generation examples are `summary` (long text → text), `tts` (text → audio), `image` (image → text), `vl_audio` (image → audio), `asr` (audio → text), and `voice` (audio → audio). The audio-output examples may also return text. Three D1 decision examples use a ticket, a photo and natural speech. The CLI has additional scenarios. Both use the same files in `samples/`; actual wording varies.
+**[Start the iOS guide →](demo-ios/QUICKSTART.md)**
 
-| Scenario | Input | Expected result |
-| --- | --- | --- |
-| `chat` | Three text turns | Related answers using earlier turns |
-| `summary` | Long public-domain text | Summary of Darwin's introduction |
-| `image` | Synthetic circles | Description of the image |
-| `asr` | Kennedy speech clip | Transcript close to the spoken words |
-| `tts` | Text | Spoken version in a WAV file |
-| `vl_audio` | Synthetic circles and a prompt | Image description in text and speech |
-| `voice` | Spoken question | Text and spoken answer naming Paris |
+Target: **iPhone arm64, iOS 18 or later**. Use a Mac with Xcode, CMake, Python, and an Apple development team configured for signing.
 
-See [samples/README.md](samples/README.md) for file details and attribution.
+1. Connect and unlock the iPhone; enable Developer Mode.
+2. Follow the guide's download helper to get the four Apple model bundles.
+3. Run its build-and-run helper to build, sign, install, copy the models, and launch the app.
+4. Select one of the six samples and check its output.
+
+**Finished when:** the selected sample shows its input, generated text or playable audio, and the available timing metrics.
+
+## Models used by the Android and IQ9 examples
+
+| Model package | Examples |
+| --- | --- |
+| `lfm3-omni-2b` | Six generation examples: text, image, or audio input → text or audio output |
+| `d1-2b` | Ticket decisions from text |
+| `d1-omni-2b` | Cat-count decisions from an image; topic decisions from natural speech |
+
+The SDK supports additional compatible model packages. For API usage, see the SDK header links at the end of the [Android](android/README.md#sdk-api-reference) or [IQ9](iq9/README.md#sdk-api-reference) guide.
+
+Sample inputs and attribution: [samples/README.md](samples/README.md). SDKs and dependencies are subject to their respective licenses; see [LICENSES/](LICENSES/).
