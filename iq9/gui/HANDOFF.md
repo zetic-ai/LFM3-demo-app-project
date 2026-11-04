@@ -9,6 +9,7 @@
 - 수정 2: llama 영상 첨부가 `Errno 21`로 실패하던 버그. 이제 설치된 llama.cpp(b11946/b12004)가 영상 미지원이라는 명확한 메시지 표시. ZETIC 영상은 Omni/VL 모두 통과.
 - Stop/반복 Stop/취소 후 다음 요청: 양 엔진 통과. 런처 브라우저 닫기 → 서버·잠금 정리 통과.
 - 범위 제외(사용자 결정 11-03): llama.cpp 영상 비교, D1-Omni 오디오→Omni TTS 전환(decision 모델에서 TTS는 버리는 값).
+- 11-04 13:00 KST 사용자 데모 중 D1 cats 샘플 Compare에서 ZETIC D1-Omni 로드 실패, llama.cpp는 성공. worker 로그: `fastrpc_mmap failed to map buffer fd 13, length 0x69129000 (1.64 GB), domain 3, errno Cannot allocate memory`. NPU crash 없음. 직전 llama.cpp HTP 세션 직후였고 11-03 22:29 실패와 같은 패턴. 원인(DSP 주소 공간 단편화/해제 지연)은 추정. 전환 대기 10초 + 1회 재시도로 우회. 근본 대책은 SDK의 단일 대형 매핑 분할.
 - 아래 "현재 상태와 작업 중단" 이하는 재개 전 기록이다.
 
 ## 현재 상태와 작업 중단
@@ -27,7 +28,7 @@
 - Ubuntu 로컬 브라우저 GUI + aiohttp + GNU C++ SDK worker. 기존 CLI 유지.
 - 자유 입력/다중 턴, 이미지·오디오·장문 샘플과 파일 첨부, 영상 입력 경로, 출력 오디오 스트리밍/재생/다운로드.
 - ZETIC/llama.cpp 선택 및 같은 입력을 순차 실행하는 Compare, 양쪽 출력과 TTFT/TPS/오디오 지표, IQ9 과거 참고 그래프의 명확한 구분.
-- 기본 LFM3 Omni/ZETIC/context 2048, Prepare와 자동 모델 전환. NPU 모델은 하나씩 실행하고 전환 시 이전 프로세스 종료 후 5초 대기.
+- 기본 LFM3 Omni/ZETIC/context 2048, Prepare와 자동 모델 전환. NPU 모델은 하나씩 실행하고 전환 시 이전 프로세스 종료 후 10초 대기(11-04 5→10초). ZETIC 로드가 DSP 매핑 실패(`hexrt_lib_open ... map ... 0x1`)면 5초 뒤 1회 자동 재시도.
 - D1 Noul/Choice/Score 질문·선택지 편집 및 확률 표시. llama API의 다중 선택 제한과 Score 의미 차이 표시.
 - 자기 BUSY 잠금, cDSP crashed 감지 시 추론 차단, 설치 스크립트/데스크톱 런처.
 

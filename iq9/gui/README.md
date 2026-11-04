@@ -68,7 +68,7 @@ The sidebar begins with explicitly labeled **IQ9 recorded reference** results fr
 
 A completed comparison adds **live** first-response, decode throughput, first-audio, or realtime-speed graphs when both engines provide that metric. First response is measured in the app server from inference dispatch to the first text/audio event; D1 measures dispatch to completed decisions. Both include local adapter/transport overhead, and both exclude loading and the engine-switch wait. Engine-native timings are also retained. Decode throughput is the backend's native decode metric; it is not inferred from character count. A result can be slower, and the graph preserves that result.
 
-The app releases the previous model process and waits five seconds before opening another NPU session, following the board's existing stability rule. This wait is displayed as switching time and excluded from inference metrics. If a remote processor is crashed, inference stops with a recovery message. The app never reboots the board.
+The app releases the previous model process and waits ten seconds (`switch_delay_seconds`) before opening another NPU session. Right after another session, the DSP can briefly lack room to map a ZETIC model's weights in one piece (`hexrt_lib_open: map ... 0x1`, kernel `failed to map buffer`); the app then waits `load_retry_seconds` (5) and retries the load once. The wait and retry are displayed as switching/loading time and excluded from inference metrics. If a remote processor is crashed, inference stops with a recovery message. The app never reboots the board.
 
 ## SDK and development
 

@@ -2,7 +2,7 @@
   "host": "127.0.0.1",
   "port": 8765,
   "llama_port": 18765,
-  "switch_delay_seconds": 5,
+  "switch_delay_seconds": 10,
   "default_model": "omni",
   "models": {
     "omni": {

@@ -166,7 +166,7 @@ class Runtime:
         await self.worker.close()
         self.active = None
         if had_active and delay:
-            await asyncio.sleep(self.config.get("switch_delay_seconds", 5))
+            await asyncio.sleep(self.config.get("switch_delay_seconds", 10))
 
     async def prepare(self, engine, model_id, settings, output, notify):
         self.claim_device()
@@ -217,19 +217,36 @@ class Runtime:
         self.active = key
         try:
             if engine == "zetic":
-                async for event in self.worker.events(
-                    {
-                        "id": str(uuid.uuid4()),
-                        "op": "load",
-                        "path": expand(model["sdk"]),
-                        "context": settings["context"],
-                        "decision": model["kind"] == "decision",
-                        "set_size": settings.get("set_size", 16),
-                        "calibrate": settings.get("calibrate", True),
-                        "lib_dir": str(REPO / "iq9/sdk/lib"),
-                    }
-                ):
-                    pass
+                for attempt in range(2):
+                    try:
+                        async for event in self.worker.events(
+                            {
+                                "id": str(uuid.uuid4()),
+                                "op": "load",
+                                "path": expand(model["sdk"]),
+                                "context": settings["context"],
+                                "decision": model["kind"] == "decision",
+                                "set_size": settings.get("set_size", 16),
+                                "calibrate": settings.get("calibrate", True),
+                                "lib_dir": str(REPO / "iq9/sdk/lib"),
+                            }
+                        ):
+                            pass
+                        break
+                    except ValueError as e:
+                        # Right after another NPU session, the DSP may not yet have room to map the weights in one piece.
+                        if attempt or "hexrt_lib_open" not in str(e) or "map" not in str(e):
+                            raise
+                        await notify(
+                            {
+                                "event": "status",
+                                "message": "NPU memory is still being released · retrying the load…",
+                            }
+                        )
+                        await self.worker.close()
+                        await asyncio.sleep(self.config.get("load_retry_seconds", 5))
+                        if self.cancelled:
+                            raise asyncio.CancelledError()
             else:
                 directory = Path(model["llama_dir"]).expanduser()
                 if (

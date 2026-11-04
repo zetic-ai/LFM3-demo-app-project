@@ -175,6 +175,39 @@ class ApiTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual([e["event"] for e in events], ["run_start", "cancelled", "complete"])
         self.assertTrue(events[-1]["cancelled"])
 
+    async def test_zetic_load_retries_once_after_map_failure(self):
+        runtime = self.client.app["gui"].runtime
+        runtime.config["load_retry_seconds"] = 0
+        runtime.claim_device = lambda: None
+        attempts, closed, notes = [], [], []
+        async def events(q):
+            attempts.append(q["op"])
+            if len(attempts) == 1:
+                raise ValueError("hexrt_lib_open: map weights / io into cdsp: 0x1")
+            yield {"event": "loaded"}
+        async def close():
+            closed.append(True)
+        async def notify(event):
+            notes.append(event.get("message", ""))
+        runtime.worker.events = events
+        runtime.worker.close = close
+        settings = {"context": 2048}
+        await runtime.prepare("zetic", "d1omni", settings, "text", notify)
+        self.assertEqual(attempts, ["load", "load"])
+        self.assertEqual(len(closed), 1)
+        self.assertTrue(any("retrying" in n for n in notes))
+
+        attempts.clear()
+        runtime.active = None
+        async def always_fail(q):
+            attempts.append(q["op"])
+            raise ValueError("hexrt_lib_open: map weights / io into cdsp: 0x1")
+            yield
+        runtime.worker.events = always_fail
+        with self.assertRaisesRegex(ValueError, "map weights"):
+            await runtime.prepare("zetic", "d1omni", settings, "text", notify)
+        self.assertEqual(attempts, ["load", "load"])
+
 
 if __name__ == "__main__":
     unittest.main()
